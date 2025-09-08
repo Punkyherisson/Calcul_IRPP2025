@@ -1,0 +1,14 @@
+{
+    "Alice": {
+        "age": 34,
+        "situation": "marié",
+        "enfants": 2,
+        "parts": 3
+    },
+    "Goitia": {
+        "age": 61,
+        "situation": "marié",
+        "enfants": 2,
+        "parts": 3
+    }
+}
