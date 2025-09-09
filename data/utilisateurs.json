@@ -10,5 +10,11 @@
         "situation": "marié",
         "enfants": 2,
         "parts": 3
+    },
+    "Titi": {
+        "age": 25,
+        "situation": "célibataire",
+        "enfants": 0,
+        "parts": 1
     }
 }
