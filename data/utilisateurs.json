@@ -1,20 +1,23 @@
 {
-    "Alice": {
-        "age": 34,
+    "Married": {
+        "annee_naissance": 1970,
+        "situation": "marié",
+        "enfants": 3,
+        "parts": 4,
+        "revenu_1AJ": 200000.0,
+        "revenu_1BJ": 120000.0,
+        "revenus_avant_2017": 5000.0,
+        "annee_naissance_conjoint": 1968
+    },
+    "Manu": {
+        "nom": "Manu",
+        "annee_naissance": 1964,
         "situation": "marié",
         "enfants": 2,
-        "parts": 3
-    },
-    "Goitia": {
-        "age": 61,
-        "situation": "marié",
-        "enfants": 2,
-        "parts": 3
-    },
-    "Titi": {
-        "age": 25,
-        "situation": "célibataire",
-        "enfants": 0,
-        "parts": 1
+        "parts": 3,
+        "annee_naissance_conjoint": 1968,
+        "revenu_1AJ": 120000.0,
+        "revenu_1BJ": 12000.0,
+        "revenus_avant_2017": 5000.0
     }
 }
