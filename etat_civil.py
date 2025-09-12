@@ -1,5 +1,16 @@
 # etat_civil.py
 
+def afficher_etat_civil(utilisateur: dict, titre="État civil en cours"):
+    print(f"\n--- {titre} ---")
+    print(f"Nom                : {utilisateur.get('nom', 'Inconnu')}")
+    print(f"Année naissance    : {utilisateur.get('annee_naissance', 'N/A')}")
+    if utilisateur.get("annee_naissance_conjoint"):
+        print(f"Conjoint né en     : {utilisateur['annee_naissance_conjoint']}")
+    print(f"Situation          : {utilisateur.get('situation', 'N/A')}")
+    print(f"Enfants            : {utilisateur.get('enfants', 0)}")
+    print(f"Parts fiscales     : {utilisateur.get('parts', 'N/A')}")
+    print("---------------------------\n")
+
 def calculer_parts(situation: str, enfants: int) -> float:
     situation = situation.lower()
     if situation in ["marié", "pacsé"]:

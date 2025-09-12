@@ -1,30 +1,26 @@
-# main.py
-
 import json
 from pathlib import Path
-from etat_civil import saisir_etat_civil
+from etat_civil import saisir_etat_civil, afficher_etat_civil
 
-# 🔹 Variables globales pour l'utilisateur actif
+# Variable globale : utilisateur actuellement chargé
 utilisateur_actif = None
-nom_utilisateur_actif = None
-
-# 🔹 Fichier de données
-DATA_FILE = Path("data/utilisateurs.json")
 
 
-# -----------------------------
-# Fonctions JSON
-# -----------------------------
 def creer_dossier_sauvegarde():
     dossier = Path("data")
     dossier.mkdir(exist_ok=True)
     return dossier
 
 
-def charger_utilisateurs():
-    """Charge les utilisateurs depuis le JSON."""
-    if DATA_FILE.exists():
-        with open(DATA_FILE, "r", encoding="utf-8") as f:
+def chemin_fichier(fichier="data/utilisateurs.json") -> Path:
+    dossier = creer_dossier_sauvegarde()
+    return dossier / Path(fichier).name
+
+
+def charger_donnees(fichier="data/utilisateurs.json"):
+    chemin = chemin_fichier(fichier)
+    if chemin.exists():
+        with open(chemin, "r", encoding="utf-8") as f:
             try:
                 return json.load(f)
             except json.JSONDecodeError:
@@ -32,144 +28,102 @@ def charger_utilisateurs():
     return {}
 
 
-def sauvegarder_utilisateurs(data: dict):
-    """Sauvegarde les utilisateurs dans le JSON."""
-    creer_dossier_sauvegarde()
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
+def sauvegarder_infos(nom: str, infos: dict, fichier="data/utilisateurs.json"):
+    chemin = chemin_fichier(fichier)
+    data = charger_donnees(fichier)
+
+    # On s’assure que la clé "nom" existe
+    infos["nom"] = nom
+
+    data[nom] = infos
+
+    with open(chemin, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
-
-# -----------------------------
-# Affichage état civil
-# -----------------------------
-def afficher_etat_civil(utilisateur: dict, titre="État civil en cours", nom_clef=None):
-    """Affiche un résumé lisible des infos état civil."""
-    print(f"\n--- {titre} ---")
-    nom = utilisateur.get("nom", nom_clef if nom_clef else "Inconnu")
-    print(f"Nom                : {nom}")
-    print(f"Année naissance    : {utilisateur.get('annee_naissance', 'N/A')}")
-    if "annee_naissance_conjoint" in utilisateur:
-        print(f"Conjoint né en     : {utilisateur['annee_naissance_conjoint']}")
-    print(f"Situation          : {utilisateur.get('situation', 'N/A')}")
-    print(f"Enfants            : {utilisateur.get('enfants', 'N/A')}")
-    print(f"Parts fiscales     : {utilisateur.get('parts', 'N/A')}")
-    print("---------------------------\n")
+    return chemin
 
 
-# -----------------------------
-# Création utilisateur
-# -----------------------------
 def creer_utilisateur():
-    global utilisateur_actif, nom_utilisateur_actif
-
-    # 🔹 Saisie état civil
+    global utilisateur_actif
     infos = saisir_etat_civil()
-    nom = infos["nom"]
-
-    # 🔹 Saisie revenus
-    while True:
-        try:
-            revenu1 = float(input("Revenu net imposable du déclarant 1 (1AJ) : "))
-            break
-        except ValueError:
-            print("⚠️ Entrez un montant numérique valide.")
-
-    revenu2 = 0.0
-    if infos["situation"] in ["marié", "pacsé"]:
-        while True:
-            try:
-                revenu2 = float(input("Revenu net imposable du déclarant 2 (1BJ) : "))
-                break
-            except ValueError:
-                print("⚠️ Entrez un montant numérique valide.")
-
-    while True:
-        try:
-            revenus_avant2017 = float(input("Revenus de versements effectués avant le 27/09/2017 : "))
-            break
-        except ValueError:
-            print("⚠️ Entrez un montant numérique valide.")
-
-    infos.update({
-        "revenu_1AJ": revenu1,
-        "revenu_1BJ": revenu2,
-        "revenus_avant_2017": revenus_avant2017,
-    })
-
-    # 🔹 Sauvegarde JSON
-    utilisateurs = charger_utilisateurs()
-    utilisateurs[nom] = infos
-    sauvegarder_utilisateurs(utilisateurs)
-
-    # 🔹 Mettre à jour utilisateur actif
+    nom = infos.get("nom", "Inconnu")
+    chemin = sauvegarder_infos(nom, infos)
     utilisateur_actif = infos
-    nom_utilisateur_actif = nom
-
+    print(f"\n💾 Données sauvegardées dans {chemin}")
     afficher_etat_civil(infos, "Nouvel état civil créé")
 
 
-# -----------------------------
-# Chargement utilisateur
-# -----------------------------
 def charger_utilisateur():
-    global utilisateur_actif, nom_utilisateur_actif
+    global utilisateur_actif
+    print("\n=== Charger un utilisateur existant ===")
+    data = charger_donnees()
 
-    utilisateurs = charger_utilisateurs()
-    if not utilisateurs:
-        print("⚠️ Aucun utilisateur enregistré.")
+    if not data:
+        print("⚠️ Aucun utilisateur enregistré. Créez-en un d'abord.")
         return
 
-    print("\nUtilisateurs disponibles :")
-    noms = list(utilisateurs.keys())
+    print("Utilisateurs disponibles :")
+    noms = list(data.keys())
     for i, nom in enumerate(noms, 1):
         print(f"{i}. {nom}")
 
     try:
         choix = int(input("Choisissez un utilisateur : "))
         if 1 <= choix <= len(noms):
-            nom_choisi = noms[choix - 1]
-            infos = utilisateurs[nom_choisi]
-
-            # Mettre à jour utilisateur actif
-            utilisateur_actif = infos
-            nom_utilisateur_actif = nom_choisi
-
-            afficher_etat_civil(infos, "État civil chargé", nom_clef=nom_choisi)
+            nom = noms[choix - 1]
+            utilisateur_actif = data[nom]
+            afficher_etat_civil(utilisateur_actif, "État civil chargé")
         else:
             print("⚠️ Choix invalide.")
     except ValueError:
         print("⚠️ Entrée invalide.")
 
 
-# -----------------------------
-# Menu principal
-# -----------------------------
+def calcul_impot(utilisateur: dict):
+    """Prototype de calcul d'impôt - à compléter"""
+    print("\n=== Calcul de l'impôt ===")
+    nom = utilisateur.get("nom", "Inconnu")
+    revenu1 = utilisateur.get("revenu_1AJ", 0.0)
+    revenu2 = utilisateur.get("revenu_1BJ", 0.0)
+    parts = utilisateur.get("parts", 1)
+
+    revenu_total = revenu1 + revenu2
+    revenu_imposable = revenu_total / parts
+
+    print(f"Contribuable : {nom}")
+    print(f"Revenu total : {revenu_total} €")
+    print(f"Nombre de parts : {parts}")
+    print(f"Revenu imposable par part : {revenu_imposable:.2f} €")
+
+    # Pour l'instant : pas de barème appliqué
+    print("⚠️ Le calcul complet du barème n'est pas encore implémenté.")
+
+
 def menu_principal():
+    global utilisateur_actif
     while True:
         print("\n===== Menu Principal =====")
         print("1. Créer un nouvel utilisateur")
         print("2. Charger un utilisateur existant")
         print("3. Quitter")
+        if utilisateur_actif:
+            print("4. Calculer l'impôt (utilisateur actif)")
+            print(f"👉 Utilisateur actif : {utilisateur_actif.get('nom', 'Inconnu')}")
 
-        # Afficher l'utilisateur actif si chargé
-        if nom_utilisateur_actif:
-            print(f"\n✅ Utilisateur actif : {nom_utilisateur_actif}")
-
-        choix = input("Votre choix : ").strip()
+        choix = input("Votre choix : ")
 
         if choix == "1":
             creer_utilisateur()
         elif choix == "2":
             charger_utilisateur()
         elif choix == "3":
-            print("👋 Au revoir !")
+            print("Au revoir 👋")
             break
+        elif choix == "4" and utilisateur_actif:
+            calcul_impot(utilisateur_actif)
         else:
-            print("⚠️ Choix invalide, essayez encore.")
+            print("❌ Choix invalide.")
 
 
-# -----------------------------
-# Entrée principale
-# -----------------------------
 if __name__ == "__main__":
     menu_principal()

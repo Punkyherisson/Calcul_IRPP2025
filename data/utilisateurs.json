@@ -19,5 +19,21 @@
         "revenu_1AJ": 120000.0,
         "revenu_1BJ": 12000.0,
         "revenus_avant_2017": 5000.0
+    },
+    "Pipo": {
+        "nom": "Pipo",
+        "annee_naissance": 1970,
+        "situation": "pacsé",
+        "enfants": 2,
+        "parts": 3,
+        "annee_naissance_conjoint": 1967
+    },
+    "Manou": {
+        "nom": "Manou",
+        "annee_naissance": 1950,
+        "situation": "marié",
+        "enfants": 3,
+        "parts": 4,
+        "annee_naissance_conjoint": 1947
     }
 }
