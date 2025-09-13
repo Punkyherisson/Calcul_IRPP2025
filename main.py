@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from etat_civil import saisir_etat_civil, afficher_etat_civil
+from revenus import saisir_revenus
 
 # Variable globale : utilisateur actuellement chargé
 utilisateur_actif = None
@@ -109,6 +110,7 @@ def menu_principal():
         if utilisateur_actif:
             print("4. Calculer l'impôt (utilisateur actif)")
             print(f"👉 Utilisateur actif : {utilisateur_actif.get('nom', 'Inconnu')}")
+            print("5. Saisir / mettre à jour les revenus (utilisateur actif)")
 
         choix = input("Votre choix : ")
 
@@ -121,6 +123,9 @@ def menu_principal():
             break
         elif choix == "4" and utilisateur_actif:
             calcul_impot(utilisateur_actif)
+        elif choix == "5" and utilisateur_actif:
+            utilisateur_actif = saisir_revenus(utilisateur_actif)
+            sauvegarder_infos(utilisateur_actif["nom"], utilisateur_actif)
         else:
             print("❌ Choix invalide.")
 
