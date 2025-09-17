@@ -1,48 +1,39 @@
 def saisir_revenus(utilisateur: dict) -> dict:
     """
-    Demande à l'utilisateur de saisir ses revenus (déclarant 1, 2, enfants).
-    Les revenus saisis sont ajoutés au dictionnaire utilisateur.
+    Saisie des revenus salariaux (1AJ, 1BJ, 1CJ, 1DJ).
+    Met à jour le dictionnaire utilisateur et le retourne.
     """
-    print("\n=== Saisie des revenus ===")
 
-    # Déclarant 1
-    while True:
-        try:
-            revenu1 = float(input("Revenu net imposable du déclarant 1 (1AJ) : "))
-            break
-        except ValueError:
-            print("⚠️ Entrez un montant numérique valide.")
-    utilisateur["revenu_1AJ"] = revenu1
+    print("\n=== Saisie des revenus salariaux ===")
+    revenus = {}
 
-    # Déclarant 2 si couple
-    if utilisateur.get("situation") in ["marié", "pacsé"]:
+    def demander_revenu(case, description):
         while True:
             try:
-                revenu2 = float(input("Revenu net imposable du déclarant 2 (1BJ) : "))
-                break
+                valeur = input(f"{description} ({case}) : ").strip()
+                return float(valeur) if valeur else 0.0
             except ValueError:
                 print("⚠️ Entrez un montant numérique valide.")
-        utilisateur["revenu_1BJ"] = revenu2
 
-    # Enfants (salaire d'apprentissage, petits jobs, etc.)
-    enfants = utilisateur.get("enfants", 0)
-    for i in range(1, enfants + 1):
-        while True:
-            try:
-                revenu_enfant = float(input(f"Revenu imposable de l’enfant {i} : "))
-                break
-            except ValueError:
-                print("⚠️ Entrez un montant numérique valide.")
-        utilisateur[f"revenu_enfant_{i}"] = revenu_enfant
+    revenus["1AJ"] = demander_revenu("1AJ", "Salaires déclarant 1")
+    revenus["1BJ"] = demander_revenu("1BJ", "Salaires déclarant 2")
+    revenus["1CJ"] = demander_revenu("1CJ", "Salaires personne à charge 1")
+    revenus["1DJ"] = demander_revenu("1DJ", "Salaires personne à charge 2")
 
-    # Revenus avant 27/09/2017
-    while True:
-        try:
-            revenus_avant2017 = float(input("Revenus de versements effectués avant le 27/09/2017 : "))
-            break
-        except ValueError:
-            print("⚠️ Entrez un montant numérique valide.")
-    utilisateur["revenus_avant_2017"] = revenus_avant2017
-
-    print("\n✅ Revenus enregistrés avec succès.\n")
+    utilisateur["revenus"] = revenus
     return utilisateur
+
+
+def afficher_revenus(utilisateur: dict):
+    """
+    Affiche les revenus si disponibles.
+    """
+    revenus = utilisateur.get("revenus")
+    if not revenus:
+        print("⚠️ Aucun revenu saisi.")
+        return
+
+    print("\n--- Revenus saisis ---")
+    for case, montant in revenus.items():
+        print(f"{case} : {montant:.2f} €")
+    print("----------------------")

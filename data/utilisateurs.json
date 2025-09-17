@@ -37,5 +37,19 @@
         "enfants": 3,
         "parts": 4,
         "annee_naissance_conjoint": 1947
+    },
+    "Zobi": {
+        "nom": "Zobi",
+        "annee_naissance": 1964,
+        "situation": "marié",
+        "enfants": 2,
+        "parts": 3,
+        "annee_naissance_conjoint": 1968,
+        "revenus": {
+            "1AJ": 120000.0,
+            "1BJ": 1200.0,
+            "1CJ": 1400.0,
+            "1DJ": 12000.0
+        }
     }
 }
