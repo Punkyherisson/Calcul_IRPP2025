@@ -1,102 +1,78 @@
-# Calcul\_IRPP2025
+# 📌 Calcul IRPP 2025 – v0.4  
 
-📌 Projet Python pour calculer l'impôt sur le revenu 2025 (France).
-Ce projet évolue progressivement par versions, en commençant par la collecte des informations de l'utilisateur et la sauvegarde dans un fichier JSON.
-
----
-
-## ⚙️ Version actuelle : V0.3
-
-### ✅ Fonctionnalités
-
-* Menu interactif avec 3 options :
-
-  1. Créer un nouvel utilisateur
-  2. Charger un utilisateur existant
-  3. Quitter
-* Création d’un utilisateur :
-
-  * Nom
-  * Année de naissance
-  * Situation familiale (célibataire, marié, pacsé, veuf, divorcé)
-  * Année de naissance du conjoint (si marié/pacsé)
-  * Nombre d’enfants à charge
-  * Calcul automatique des parts fiscales
-  * Revenus :
-
-    * Revenu net imposable du déclarant 1 (1AJ)
-    * Revenu net imposable du déclarant 2 (1BJ) si couple
-    * Revenus de versements effectués avant le 27/09/2017
-* Sauvegarde automatique des informations dans un fichier JSON (`data/utilisateurs.json`)
-* Possibilité de charger un utilisateur existant et d’afficher son état civil
-* Indication claire de l’**utilisateur actif** dans le menu principal
+## 📖 Description  
+Ce projet a pour but de **simuler le calcul de l’impôt sur le revenu en France (IRPP 2025)**.  
+Il évolue étape par étape :  
+- **V0.1** : Saisie simple des informations utilisateur.  
+- **V0.2** : Sauvegarde et chargement des utilisateurs via fichier JSON.  
+- **V0.3** : Séparation des responsabilités (`etat_civil.py`), gestion d’un utilisateur actif, affichage clair de l’état civil.  
+- **V0.4** : Ajout de la saisie des revenus salariaux (cases 1AJ, 1BJ, 1CJ, 1DJ) via `revenus.py`.  
 
 ---
 
-## 🗂️ Organisation du projet
+## ⚙️ Fonctionnalités actuelles  
+- Menu interactif :  
+  - Créer un utilisateur.  
+  - Charger un utilisateur existant.  
+  - Afficher l’utilisateur actif.  
+  - Calculer l’impôt (placeholder, à implémenter).  
+  - Saisir les revenus salariaux (1AJ → 1DJ).  
+- Sauvegarde automatique dans un fichier **`data/utilisateurs.json`**.  
+- Gestion multi-utilisateurs (plusieurs fiches sauvegardées).  
 
-```
+---
+
+## 📂 Organisation du projet  
 Calcul_IRPP2025/
 │
-├── main.py              # Programme principal (menu, gestion utilisateurs)
-├── etat_civil.py        # Module séparé pour la saisie de l’état civil
-├── data/                # Répertoire des données
-│   └── utilisateurs.json
-└── README.md            # Documentation du projet
-```
+├── main.py # Menu principal
+├── etat_civil.py # Gestion état civil et parts fiscales
+├── revenus.py # Gestion de la saisie des revenus (1AJ–1DJ)
+├── tests/ # (optionnel) Fichiers de test avec pytest
+│ └── test_revenus.py
+│
+├── data/
+│ └── utilisateurs.json # Sauvegardes utilisateurs
+│
+└── README.md # Documentation du projet
+
 
 ---
 
-## ▶️ Utilisation
+## 🖥️ Exemple d’utilisation  
 
-### 1. Lancer le programme
-
+### 1. Lancer le programme  
 python main.py
 
-### 2. Exemple de menu
-
-```
+2. Menu principal
 ===== Menu Principal =====
 1. Créer un nouvel utilisateur
 2. Charger un utilisateur existant
-3. Quitter
-```
+3. Afficher l’utilisateur actif
+4. Calculer l'impôt (utilisateur actif)
+5. Saisir les revenus salariaux
+6. Quitter
 
-### 3. Exemple de création d’utilisateur
+3. Exemple saisie revenus
+=== Saisie des revenus salariaux ===
+Salaires déclarant 1 (1AJ) : 68401
+Salaires déclarant 2 (1BJ) : 3088
+Salaires personne à charge 1 (1CJ) : 16380
+Salaires personne à charge 2 (1DJ) : 84
 
-```
-=== Création d'un nouvel utilisateur ===
-Nom : Alice
-Année de naissance : 1985
-Situation familiale : marié
-Année de naissance du conjoint : 1983
-Enfants à charge : 2
-Revenu net imposable du déclarant 1 (1AJ) : 35000
-Revenu net imposable du déclarant 2 (1BJ) : 25000
-Revenus avant 27/09/2017 : 500
+--- Revenus saisis ---
+1AJ : 68401.00 €
+1BJ : 3088.00 €
+1CJ : 16380.00 €
+1DJ : 84.00 €
+----------------------
 
---- Nouvel état civil créé ---
-Nom                : Alice
-Année naissance    : 1985
-Conjoint né en     : 1983
-Situation          : marié
-Enfants            : 2
-Parts fiscales     : 3
-```
+✅ Prochaines étapes
 
----
+Implémenter le calcul de l’impôt en fonction des revenus et parts fiscales.
 
-## 🔮 Prochaines étapes (V0.4+)
+Ajouter d’autres sources de revenus (fonciers, BIC/BNC, etc.).
 
-* Ajouter la **prise en compte du barème progressif 2025** pour calculer l’impôt brut
-* Gérer les **abattements spécifiques** (ex. revenus avant 2017, pensions, etc.)
-* Générer un **résumé d’imposition** (impôt brut, décote, impôt net)
-* Améliorer les tests unitaires et la validation des saisies
+Intégrer les barèmes IRPP 2025.
 
----
-
-## 👨‍💻 Auteur
-
-Projet développé par *Punkyherisson*
-Version actuelle : **V0.3**
-
+Ajouter des tests unitaires (pytest).
